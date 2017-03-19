@@ -15,10 +15,11 @@ module TwentyFortyEight
   @@best  = nil
 
   def self.play(settings = {}, &block)
-    game = Game.new @@games.count, settings
-    dirs = game.directions - (settings.except || [])
-    dirs = dirs - (settings.only || [])
-    dsl  = Dsl.new settings, &block if block_given?
+    settings = Options.new settings if settings.is_a? Hash
+    game     = Game.new @@games.count, settings
+    dirs     = game.directions - (settings.except || [])
+    dirs     = dirs - (settings.only || [])
+    dsl      = Dsl.new settings, &block if block_given?
 
     @@best ||= game
 
@@ -32,14 +33,15 @@ module TwentyFortyEight
     restart      = false
     non_blocking = dirs
 
-    render_game game, settings
+    render_game game, settings if settings.verbose?
 
     loop do
       @@best = game if @@best != game && game.score > @@best.score
-
+      # binding.pry
       if game.end?
-        break if settings.mode? :endless
-
+        break if settings.mode?(:endless) ||
+                 !settings.verbose? ||
+                 !settings.interactive?
         render_game game, settings, true
 
         action = :default
@@ -54,8 +56,8 @@ module TwentyFortyEight
         if settings.interactive?
           action = Screen.handle_keypress until Game::ACTIONS.include?(action)
         else
-          action = dsl && dsl.apply(game.dup) || non_blocking.sample
           non_blocking = game.changed? ? dirs : non_blocking - [action]
+          action       = dsl && dsl.apply(game.dup) || non_blocking.sample
 
           if non_blocking.empty?
             non_blocking.concat settings.except if settings.except?
@@ -63,8 +65,8 @@ module TwentyFortyEight
           end
         end
 
-        render_game game.action(action), settings if settings.verbose? ||
-                                                     settings.interactive?
+        game.action action
+        render_game game, settings if settings.verbose? || settings.interactive?
         sleep(settings.delay.to_f / 1000) if settings.delay?
       end
     end

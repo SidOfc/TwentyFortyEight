@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require_relative '../lib/TwentyFortyEight'
 
-opts = TwentyFortyEight::Cli.parse!
-TwentyFortyEight.send opts.mode, opts do
+options = TwentyFortyEight::Cli.parse!
+TwentyFortyEight.send options.mode, options do
   down || left || right || up
 end

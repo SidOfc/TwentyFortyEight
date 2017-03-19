@@ -31,11 +31,6 @@ module TwentyFortyEight
           settings[:delay] = ms
         end
 
-        cli.on('-aSOLVER', '--a=SOLVER', String,
-               'Specify a solver to play the game') do |solver|
-          settings[:solver] = solver.to_sym
-        end
-
         cli.on('-sSIZE', '--size=SIZE', Integer,
                'Set grid size of the board') do |size|
           settings[:size] = size

@@ -68,7 +68,7 @@ module TwentyFortyEight
     end
 
     def move(dir, **opts)
-      return self unless directions.include? dir
+      return self unless directions.include? dir.to_sym
 
       @prev_score     = score
       @prev_available = available

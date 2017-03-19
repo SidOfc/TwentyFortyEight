@@ -9,8 +9,7 @@ module TwentyFortyEight
       settings[:mode] = :play unless TwentyFortyEight.modes.include? mode
 
       OptionParser.new do |cli|
-        cli.banner = "2048 [mode] [options]"
-
+        cli.banner = ''
         cli.separator "options:"
 
         cli.on('-i', '--interactive', 'Can you reach the 2048 tile?') do
@@ -55,6 +54,12 @@ module TwentyFortyEight
         end
 
         cli.on('--help', 'Display this help') do
+          puts 'usage: 2048 [mode] [options]'
+          puts 'modes:'
+          puts '     play'    + (' ' * 28) + 'Plays the game automatically in order :down, :left, :right, :up'
+          puts '     endless' + (' ' * 25) + 'Loops play until ctrl+C'
+          puts ''
+          puts '     When no mode is supplied, it will default to: 2048 play -i -s 4'
           puts cli
           exit 0
         end

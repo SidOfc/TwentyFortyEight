@@ -19,7 +19,7 @@ module TwentyFortyEight
     game     = Game.new @@games.count, settings
     dirs     = game.directions - (settings.except || [])
     dirs     = dirs - (settings.only || [])
-    dsl      = Dsl.new settings, &block if block_given?
+    dsl      = Dsl.new game, settings, &block if block_given?
 
     @@best ||= game
 
@@ -86,6 +86,7 @@ module TwentyFortyEight
   end
 
   def self.endless(settings = {}, &block)
+    settings = Options.new settings if settings.is_a? Hash
     loop { TwentyFortyEight.play settings, &block }
   ensure
     Screen.restore! if settings.verbose?

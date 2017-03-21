@@ -4,20 +4,25 @@ module TwentyFortyEight
   class Dsl
     attr_reader :settings, :game
 
-    def initialize(settings = {}, &block)
+    def initialize(game, settings = {}, &block)
       @callable = block
       @settings = settings
+      @game     = game
     end
 
     def apply(game)
       @queue = []
-      @game  = game.dup
-
       instance_eval(&@callable)
     end
 
+    def quit!
+      game.quit! && :quit
+    end
+
     def method_missing(sym, *args, &block)
-      return sym if game.action(sym, insert: false).changed?
+      return game.send(sym) if [:won?, :lost?, :changed?, :available,
+                                :score, :prev_score].include?(sym)
+      return sym if game.dup.action(sym, insert: false).changed?
     end
 
     def respond_to_missing?(sym, *args, &block)

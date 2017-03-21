@@ -11,8 +11,10 @@ require_relative 'TwentyFortyEight/screen'
 require_relative 'TwentyFortyEight/dsl'
 
 module TwentyFortyEight
-  @@games = []
-  @@best  = nil
+  MODES = [:play, :endless]
+
+  @@games     = []
+  @@highscore = nil
 
   def self.play(settings = {}, &block)
     settings = Options.new settings if settings.is_a? Hash
@@ -21,7 +23,7 @@ module TwentyFortyEight
     dirs     = dirs - (settings.only || [])
     dsl      = Dsl.new game, settings, &block if block_given?
 
-    @@best ||= game
+    load_or_set_highscore! game.score unless @@highscore
 
     Screen.init! settings if settings.verbose? && @@games.empty?
 
@@ -36,8 +38,6 @@ module TwentyFortyEight
     render_game game, settings if settings.verbose?
 
     loop do
-      @@best = game if @@best != game && game.score > @@best.score
-      # binding.pry
       if game.end?
         break if settings.mode?(:endless) ||
                  !settings.verbose? ||
@@ -66,6 +66,7 @@ module TwentyFortyEight
         end
 
         game.action action
+        load_or_set_highscore! game.score
         render_game game, settings if settings.verbose? || settings.interactive?
         sleep(settings.delay.to_f / 1000) if settings.delay?
       end
@@ -79,30 +80,44 @@ module TwentyFortyEight
     end
 
     return play(settings, &block) if restart
-
     game
   ensure
     Screen.restore! if settings.verbose? && settings.mode?(:play)
   end
 
+  def self.load_or_set_highscore!(current_score, path = '~/.2048')
+    @@highscore ||= load_highscore
+
+    return unless current_score > @@highscore
+
+    @@highscore = current_score
+    File.write File.expand_path(path), current_score
+  end
+
+  def self.load_highscore(path = '~/.2048')
+    path = File.expand_path path
+
+    if File.exists?(path)
+      File.read(path).strip.to_i
+    else
+      File.new path, File::CREAT
+      0
+    end
+  end
+
   def self.endless(settings = {}, &block)
+    load_or_set_highscore!
     settings = Options.new settings if settings.is_a? Hash
     loop { TwentyFortyEight.play settings, &block }
   ensure
     Screen.restore! if settings.verbose?
   end
 
-  def self.modes
-    (TwentyFortyEight.methods - [:modes, :render_game]) - Object.methods
-  end
-
   def self.render_game(game, settings, final = false)
     h = { interactive: settings.interactive?, info: [] }
 
-    unless settings.mode? :endless
-      h[:info] << { highscore: @@best&.score, move: game.move_count}
-    end
-
+    h[:info] << { game: (1 + game.id) } if settings.mode? :endless
+    h[:info] << { highscore: @@highscore, move: game.move_count }
     h[:info] << { score: game.score, dir: game.current_dir}
     h[:history] = (@@games + [game]) if settings.history?
 

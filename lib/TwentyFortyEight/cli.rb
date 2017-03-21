@@ -6,7 +6,7 @@ module TwentyFortyEight
       mode     = ARGV[0].to_s.downcase.to_sym
       settings = defaults_for(mode).merge user_defaults
       settings[:mode] = mode
-      settings[:mode] = :play unless TwentyFortyEight.modes.include? mode
+      settings[:mode] = :play unless TwentyFortyEight::MODES.include? mode
 
       OptionParser.new do |cli|
         cli.banner = ''

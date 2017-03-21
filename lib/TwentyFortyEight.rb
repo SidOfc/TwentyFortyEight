@@ -97,14 +97,16 @@ module TwentyFortyEight
   end
 
   def self.render_game(game, settings, final = false)
-    print_extra = { interactive: settings.interactive?,
-                    info: [{ highscore: @@best&.score},
-                           { score: game.score, dir: game.current_dir},
-                           { id: @@games.count, move: game.move_count }]}
+    h = { interactive: settings.interactive?, info: [] }
 
-    print_extra[:history] = (@@games + [game]) if settings.history?
+    unless settings.mode? :endless
+      h[:info] << { highscore: @@best&.score, move: game.move_count}
+    end
 
-    return Screen.game_over game, print_extra if final
-    Screen.render game.board.to_a, print_extra
+    h[:info] << { score: game.score, dir: game.current_dir}
+    h[:history] = (@@games + [game]) if settings.history?
+
+    return Screen.game_over game, h if final
+    Screen.render game.board.to_a, h
   end
 end

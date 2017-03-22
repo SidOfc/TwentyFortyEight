@@ -113,8 +113,6 @@ module TwentyFortyEight
   end
 
   def self.endless(settings = {}, &block)
-    load_or_set_highscore!
-    settings = Options.new settings if settings.is_a? Hash
     loop { TwentyFortyEight.play settings, &block }
   ensure
     Screen.restore! if settings.verbose?

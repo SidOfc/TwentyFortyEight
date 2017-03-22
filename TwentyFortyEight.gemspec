@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %(A 2048 game for terminals)
   spec.description   = 'Play a game of 2048 in the terminal, colorized using ' \
-                       'Ruby curses. See --help for more options)'
+                       'Ruby curses. (See --help for options / controls)'
   spec.homepage      = 'https://sidofc.github.io/projects/2048'
   spec.license       = 'MIT'
 

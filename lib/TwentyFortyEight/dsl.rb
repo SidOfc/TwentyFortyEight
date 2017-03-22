@@ -6,6 +6,7 @@ module TwentyFortyEight
 
     def initialize(game, settings = {}, &block)
       @callable = block
+      @sequence = []
       @settings = settings
       @game     = game
     end
@@ -15,14 +16,33 @@ module TwentyFortyEight
       instance_eval(&@callable)
     end
 
+    def sequence(*directions)
+      @sequence = directions.flatten.map(&:to_sym)
+      run_sequence
+    end
+
+    def run_sequence
+      @c = @sequence.dup if @c.nil? || @c.empty?
+      m  = @c.shift
+      m = @c.shift until game.dup.action(m, insert: false).changed? || @c.empty?
+      @c.any? && m
+    end
+
+    def info?(sym)
+      [:won?, :lost?, :changed?, :available, :score, :prev_score].include? sym
+    end
+
+    def info(sym)
+      game.send sym
+    end
+
     def quit!
       game.quit! && :quit
     end
 
     def method_missing(sym, *args, &block)
-      return game.send(sym) if [:won?, :lost?, :changed?, :available,
-                                :score, :prev_score].include?(sym)
-      return sym if game.dup.action(sym, insert: false).changed?
+      return info sym     if info? sym
+      return sym          if game.dup.action(sym, insert: false).changed?
     end
 
     def respond_to_missing?(sym, *args, &block)

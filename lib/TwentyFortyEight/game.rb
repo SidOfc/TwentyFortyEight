@@ -3,9 +3,8 @@ module TwentyFortyEight
   # Game
   class Game
     attr_reader :id, :board, :settings, :score, :prev_score, :prev_available,
-                :move_count, :log, :current_dir
+                :moves, :log, :current_dir
 
-    SETTINGS = { size: 4, fill: 0, empty: 0 }.freeze
     MOVES    = [:up, :down, :left, :right].freeze
     ACTIONS  = [*MOVES, :quit].freeze
 
@@ -13,8 +12,8 @@ module TwentyFortyEight
       @id             = id
       @score          = 0
       @prev_score     = 0
-      @move_count     = 0
-      @settings       = Options.new SETTINGS.merge(opts).merge(rest_opts)
+      @moves          = 0
+      @settings       = Options.new opts.merge(rest_opts)
       @board          = Board.new(settings)
       @prev_available = available
       @current_dir    = nil
@@ -77,9 +76,9 @@ module TwentyFortyEight
       send dir
 
       if changed?
-        @move_count += 1
+        @moves += 1
 
-        log << { move: move_count, score: score, direction: dir } if log
+        log << { move: moves, score: score, direction: dir } if log
         insert! unless opts[:insert] == false
       end
 

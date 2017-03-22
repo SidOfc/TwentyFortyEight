@@ -11,19 +11,20 @@ require_relative 'TwentyFortyEight/screen'
 require_relative 'TwentyFortyEight/dsl'
 
 module TwentyFortyEight
-  MODES = [:play, :endless]
+  MODES    = [:play, :endless].freeze
+  SETTINGS = { size: 4, fill: 0, empty: 0 }.freeze
 
-  @@games     = []
+  @@games     = [].freeze
   @@highscore = nil
 
   def self.play(settings = {}, &block)
-    settings = Options.new settings if settings.is_a? Hash
-    game     = Game.new @@games.count, settings
-    dirs     = game.directions - (settings.except || [])
-    dirs     = dirs - (settings.only || [])
-    dsl      = Dsl.new game, settings, &block if block_given?
+    settings          = Options.new SETTINGS.merge(settings)
+    game              = Game.new @@games.count, settings
+    dirs              = game.directions - (settings.except || [])
+    dirs             -= (settings.only || [])
+    dsl               = Dsl.new game, settings, &block if block_given?
 
-    load_or_set_highscore! game.score unless @@highscore
+    load_or_set_highscore!(game.score, settings) unless @@highscore
 
     Screen.init! settings if settings.verbose? && @@games.empty?
 
@@ -66,7 +67,7 @@ module TwentyFortyEight
         end
 
         game.action action
-        load_or_set_highscore! game.score
+        load_or_set_highscore! game.score, settings
         render_game game, settings if settings.verbose? || settings.interactive?
         sleep(settings.delay.to_f / 1000) if settings.delay?
       end
@@ -85,23 +86,29 @@ module TwentyFortyEight
     Screen.restore! if settings.verbose? && settings.mode?(:play)
   end
 
-  def self.load_or_set_highscore!(current_score, path = '~/.2048')
-    @@highscore ||= load_highscore
+  def self.load_or_set_highscore!(current_score, settings, path = '~/.2048')
+    @@highscore                ||= load_highscore
+    @@highscore[settings.size.to_s] ||= 0
 
-    return unless current_score > @@highscore
+    return unless current_score > @@highscore[settings.size.to_s]
 
-    @@highscore = current_score
-    File.write File.expand_path(path), current_score
+    @@highscore[settings.size.to_s] = current_score
+    write_highscore
+  end
+
+  def self.write_highscore(path = '~/.2048')
+    File.write File.expand_path(path), @@highscore.to_json
   end
 
   def self.load_highscore(path = '~/.2048')
     path = File.expand_path path
 
     if File.exists?(path)
-      File.read(path).strip.to_i
+      contents = File.read path
+      hsh      = JSON.parse contents.start_with?('{') && contents || '{}'
     else
       File.new path, File::CREAT
-      0
+      {}
     end
   end
 
@@ -117,7 +124,7 @@ module TwentyFortyEight
     h = { interactive: settings.interactive?, info: [] }
 
     h[:info] << { game: (1 + game.id) } if settings.mode? :endless
-    h[:info] << { highscore: @@highscore, move: game.move_count }
+    h[:info] << { highscore: @@highscore[settings.size.to_s], move: game.moves }
     h[:info] << { score: game.score, dir: game.current_dir}
     h[:history] = (@@games + [game]) if settings.history?
 

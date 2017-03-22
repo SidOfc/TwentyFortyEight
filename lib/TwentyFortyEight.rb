@@ -14,7 +14,7 @@ module TwentyFortyEight
   MODES    = [:play, :endless].freeze
   SETTINGS = { size: 4, fill: 0, empty: 0 }.freeze
 
-  @@games     = [].freeze
+  @@games     = []
   @@highscore = nil
 
   def self.play(settings = {}, &block)

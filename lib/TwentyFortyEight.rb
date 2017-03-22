@@ -87,7 +87,7 @@ module TwentyFortyEight
   end
 
   def self.load_or_set_highscore!(current_score, settings, path = '~/.2048')
-    @@highscore                ||= load_highscore
+    @@highscore                     ||= load_highscore
     @@highscore[settings.size.to_s] ||= 0
 
     return unless current_score > @@highscore[settings.size.to_s]

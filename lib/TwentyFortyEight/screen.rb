@@ -84,12 +84,12 @@ module TwentyFortyEight
     def self.handle_keypress(allow_moves = true)
       case Curses.getch
       when ' ' then sleep 0.2 until Curses.getch == ' '
-      when Curses::KEY_DOWN,  's' then :down  if allow_moves
-      when Curses::KEY_UP,    'w' then :up    if allow_moves
-      when Curses::KEY_LEFT,  'a' then :left  if allow_moves
-      when Curses::KEY_RIGHT, 'd' then :right if allow_moves
-      when Curses::KEY_CLOSE, 'q' then :quit
-      when 'r' then :restart
+      when Curses::KEY_DOWN,  's', 'j' then :down  if allow_moves
+      when Curses::KEY_UP,    'w', 'k' then :up    if allow_moves
+      when Curses::KEY_LEFT,  'a', 'h' then :left  if allow_moves
+      when Curses::KEY_RIGHT, 'd', 'l' then :right if allow_moves
+      when Curses::KEY_CLOSE, 'q'      then :quit
+      when 'r'                         then :restart
       end
     end
 

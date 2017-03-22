@@ -18,11 +18,11 @@ module TwentyFortyEight
   @@highscore = nil
 
   def self.play(settings = {}, &block)
-    settings          = Options.new SETTINGS.merge(settings)
-    game              = Game.new @@games.count, settings
-    dirs              = game.directions - (settings.except || [])
-    dirs             -= (settings.only || [])
-    dsl               = Dsl.new game, settings, &block if block_given?
+    settings = Options.new SETTINGS.merge(settings)
+    game     = Game.new @@games.count, settings
+    dirs     = game.directions - (settings.except || [])
+    dirs    -= (settings.only || [])
+    dsl      = Dsl.new game, settings, &block if block_given?
 
     load_or_set_highscore!(game.score, settings) unless @@highscore
 

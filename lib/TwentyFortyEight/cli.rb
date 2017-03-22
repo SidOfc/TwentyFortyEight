@@ -50,6 +50,11 @@ module TwentyFortyEight
 
         cli.on('--help', 'Display this help') do
           puts 'usage: 2048 [mode] [options]'
+          puts 'controls:'
+          puts '     W A S D'
+          puts '     K J H L'
+          puts '     ARROW KEYS'
+          puts ''
           puts 'modes:'
           puts '     play'    + (' ' * 28) + 'Plays the game automatically in order :down, :left, :right, :up'
           puts '     endless' + (' ' * 25) + 'Loops play until ctrl+C'

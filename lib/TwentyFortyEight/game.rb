@@ -5,6 +5,7 @@ module TwentyFortyEight
     attr_reader :id, :board, :settings, :score, :prev_score, :prev_available,
                 :moves, :log, :current_dir
 
+    DEFAULTS = { fill: 0, empty: 0 }.freeze
     MOVES    = [:up, :down, :left, :right].freeze
     ACTIONS  = [*MOVES, :quit].freeze
 
@@ -13,7 +14,7 @@ module TwentyFortyEight
       @score          = 0
       @prev_score     = 0
       @moves          = 0
-      @settings       = Options.new opts.merge(rest_opts)
+      @settings       = Options.new DEFAULTS.merge(opts.merge(rest_opts))
       @board          = Board.new(settings)
       @prev_available = available
       @current_dir    = nil
@@ -34,7 +35,7 @@ module TwentyFortyEight
     end
 
     def won?
-      board.flatten.max >= 2048
+      board.board.flatten.max >= 2048
     end
 
     def lost?
@@ -102,7 +103,7 @@ module TwentyFortyEight
     end
 
     def dup
-      TwentyFortyEight::Game.new settings.merge(board: board.to_a)
+      Game.new settings.merge(board: board.to_a)
     end
 
     private

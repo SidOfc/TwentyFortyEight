@@ -4,7 +4,10 @@ module TwentyFortyEight
   class Board
     attr_reader :board, :settings
 
+    DEFAULTS = { size: 4, fill: 0, empty: 0 }
+
     def initialize(opts = {})
+      opts             = Options.new DEFAULTS.merge(opts)
       @settings        = opts
       @settings[:size] = settings.board.size if settings.board?
       @board           = settings.board || Board.generate(settings)
@@ -39,15 +42,14 @@ module TwentyFortyEight
     end
 
     def dup
-      Board.new settings.merge(board: board.dup)
+      new settings.merge(board: board.dup)
     end
 
     private
 
-    def self.generate(**opts)
-      Array.new(opts[:size]) do
-        Array.new(opts[:size]) { opts[:fill] }
-      end
+    def self.generate(opts_hsh, **opts)
+      opts = opts_hsh.merge opts
+      Array.new(opts.size) { Array.new(opts.size) { opts.fill } }
     end
   end
 end

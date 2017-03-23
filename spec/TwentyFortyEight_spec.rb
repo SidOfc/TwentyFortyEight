@@ -1,11 +1,11 @@
 require "spec_helper"
 
 RSpec.describe TwentyFortyEight do
-  it "has a version number" do
-    expect(TwentyFortyEight::VERSION).not_to be nil
-  end
+  it 'Can play a game' do
+    game = TwentyFortyEight.play
 
-  it "does something useful" do
-    expect(false).to eq(true)
+    expect(game.end?).to  be true
+    expect(game.score).to be > 0
+    expect(game.moves).to be > 0
   end
 end

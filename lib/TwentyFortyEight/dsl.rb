@@ -22,10 +22,22 @@ module TwentyFortyEight
     end
 
     def run_sequence
-      @c = @sequence.dup if @c.nil? || @c.empty?
-      m  = @c.shift
-      m = @c.shift until game.dup.action(m, insert: false).changed? || @c.empty?
-      @c.any? && m
+      return @poss.shift if @poss && @poss.any?
+
+      copy   = @sequence.dup
+      sample = game.dup
+      @poss  = []
+
+      while (next_move = copy.shift)
+        unless sample.move(next_move).changed?
+          @poss = nil
+          break
+        end
+
+        @poss << next_move
+      end
+
+      @poss && @poss.shift
     end
 
     def info?(sym)

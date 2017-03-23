@@ -20,6 +20,7 @@ module TwentyFortyEight
 
     def merge(other)
       @options.merge! other
+      self
     end
 
     def to_hash

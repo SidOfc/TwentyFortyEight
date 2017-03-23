@@ -3,11 +3,6 @@ require_relative '../lib/TwentyFortyEight'
 
 options = TwentyFortyEight::Cli.parse!
 
-move_pattern = []
-9.times { move_pattern << [:left,  :down] }
-1.times { move_pattern << [:right, :down] }
-move_pattern.flatten!
-
 TwentyFortyEight.send options.mode, options do
-  sequence(move_pattern) || down || left || right || up
+  down || left || right || up
 end

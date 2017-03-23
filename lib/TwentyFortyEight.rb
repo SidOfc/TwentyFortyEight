@@ -103,7 +103,7 @@ module TwentyFortyEight
   def self.load_highscore(path = '~/.2048')
     path = File.expand_path path
 
-    if File.exists?(path)
+    if File.exist? path
       contents = File.read path
       hsh      = JSON.parse contents.start_with?('{') && contents || '{}'
     else

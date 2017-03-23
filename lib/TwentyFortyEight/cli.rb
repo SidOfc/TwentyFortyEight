@@ -74,7 +74,7 @@ module TwentyFortyEight
     def self.defaults_for(mode)
       case mode.to_sym
       when :endless
-        { verbose: true, delay: 100 }
+        { verbose: true, delay: 100, history: true }
       when :play
         { verbose: true, delay: 100 }
       else

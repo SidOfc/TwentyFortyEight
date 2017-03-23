@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = "bin"
+  spec.bindir        = 'bin'
   spec.executables   = ['2048']
   spec.require_paths = ['lib']
 
@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'coveralls'
 
   spec.add_runtime_dependency 'curses'
   spec.add_runtime_dependency 'json'

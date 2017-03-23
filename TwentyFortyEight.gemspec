@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'TwentyFortyEight/version'
 
 Gem::Specification.new do |spec|
+  spec.required_ruby_version = '>= 2.1'
   spec.name          = 'TwentyFortyEight'
   spec.version       = TwentyFortyEight::VERSION
   spec.authors       = ['Sidney Liebrand']

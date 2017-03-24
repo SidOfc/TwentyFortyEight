@@ -14,8 +14,9 @@ module TwentyFortyEight
   MODES    = [:play, :endless].freeze
   SETTINGS = { size: 4, fill: 0, empty: 0 }.freeze
 
-  @@games     = []
-  @@highscore = nil
+  @@games        = []
+  @@session_high = 0
+  @@highscore    = nil
 
   def self.play(settings = {}, &block)
     settings = Options.new SETTINGS.merge(settings)
@@ -87,12 +88,15 @@ module TwentyFortyEight
   end
 
   def self.load_or_set_highscore!(current_score, settings, path = '~/.2048')
-    @@highscore                     ||= load_highscore
-    @@highscore[settings.size.to_s] ||= 0
+    skey = settings.size.to_s
 
-    return unless current_score > @@highscore[settings.size.to_s]
+    @@highscore       ||= load_highscore
+    @@highscore[skey] ||= 0
+    @@session_high      = current_score if current_score > @@session_high
 
-    @@highscore[settings.size.to_s] = current_score
+    return unless current_score > @@highscore[skey]
+
+    @@highscore[skey] = current_score
     write_highscore
   end
 
@@ -120,9 +124,14 @@ module TwentyFortyEight
 
   def self.render_game(game, settings, final = false)
     h = { interactive: settings.interactive?, info: [] }
+    s = settings.key.to_s
 
-    h[:info] << { game: (1 + game.id) } if settings.mode? :endless
-    h[:info] << { highscore: @@highscore[settings.size.to_s], move: game.moves }
+    if settings.mode? :endless
+      h[:info] << { highscore: "#{@@session_high}/#{@@highscore[settings.size.to_s]}" }
+      h[:info] << { game: (1 + game.id), move: game.moves }
+    else
+      h[:info] << { highscore: @@highscore[settings.size.to_s] , move: game.moves}
+    end
     h[:info] << { score: game.score, dir: game.current_dir}
     h[:history] = (@@games + [game]) if settings.history?
 

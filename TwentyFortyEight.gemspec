@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %(A 2048 game for terminals)
   spec.description   = 'Play a game of 2048 in the terminal, colorized using ' \
                        'Ruby curses. (See --help for options / controls)'
-  spec.homepage      = 'https://sidofc.github.io/projects/2048'
+  spec.homepage      = 'https://github.com/SidOfc/TwentyFortyEight'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

@@ -17,6 +17,10 @@ The game is played using either the **arrow keys**, **W**, **A**, **S**, **D** o
 
 _dates are in dd-mm-yyyy format_
 
+#### 08-12-2017 VERSION 0.2.2
+
+- Logger no longer throws exceptions if no `logs` dir exists in the current working directory.
+
 #### 24-03-2017 VERSION 0.2.1
 
 - Fixed `TwentyFortyEight::Game#won?` method, it no longer causes an exception

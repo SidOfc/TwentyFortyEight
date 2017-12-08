@@ -18,7 +18,7 @@ module TwentyFortyEight
       path   = options[:path] || options[:dir] || Dir.pwd
       path   = File.expand_path('./' + path) unless path.start_with? '/'
 
-      return unless Dir.exist?(path)
+      return unless Dir.exist? path
       File.open(File.join(path, name), 'w') { |f| f.write @entries.to_json }
     end
 
@@ -30,7 +30,9 @@ module TwentyFortyEight
 
     def self.destroy!(path)
       full_path = File.expand_path path
-      File.delete full_path if File.exist? full_path
+      return unless File.exist? full_path
+      File.delete full_path
+      true
     end
   end
 end

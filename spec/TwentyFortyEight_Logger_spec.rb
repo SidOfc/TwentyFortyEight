@@ -34,7 +34,6 @@ RSpec.describe TwentyFortyEight::Logger do
     path = File.expand_path File.join(File.dirname(__FILE__), 'files')
     full = File.join path, 'test_reopen.log.json'
     log  = TwentyFortyEight::Logger.new
-    t    = TwentyFortyEight::Logger::FileNotFound
 
     log << { some: :property, and: [:an_array], maybe: true, could_be: 1 }
     log << { some: :property, and: [:an_array], maybe: true, could_be: 2 }
@@ -42,6 +41,6 @@ RSpec.describe TwentyFortyEight::Logger do
     log.write! path: path, name: 'test_reopen'
 
     expect(TwentyFortyEight::Logger.destroy!(full)).to be_truthy
-    expect { TwentyFortyEight::Logger.destroy! 'somebs.file' }.to raise_error t
+    expect(TwentyFortyEight::Logger.destroy!('somebs.file')).to be_falsy
   end
 end

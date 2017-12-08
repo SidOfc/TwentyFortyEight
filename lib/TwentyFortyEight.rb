@@ -97,7 +97,7 @@ module TwentyFortyEight
     return unless current_score > @@highscore[skey]
 
     @@highscore[skey] = current_score
-    write_highscore
+    write_highscore path
   end
 
   def self.write_highscore(path = '~/.2048')

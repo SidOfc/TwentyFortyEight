@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module TwentyFortyEight
   # Logger
   class Logger
@@ -13,31 +14,23 @@ module TwentyFortyEight
     end
 
     def write!(options = {})
-      name = (options[:name] || "2048-#{Time.now.to_i}") + '.log.json'
-      path = File.join File.expand_path(options[:path]), name if options[:path]
-      path = File.join(Dir.pwd, name) unless options[:dir] || options[:path]
-      path = (File.join Dir.pwd, options[:dir], name) if options[:dir]
+      name   = (options[:name] || "2048-#{Time.now.to_i}") + '.log.json'
+      path   = options[:path] || options[:dir] || Dir.pwd
+      path   = File.expand_path('./' + path) unless path.start_with? '/'
 
-      File.open(path, 'w') { |f| f.write @entries.to_json }
+      return unless Dir.exist?(path)
+      File.open(File.join(path, name), 'w') { |f| f.write @entries.to_json }
     end
 
     def self.load!(path)
       full_path = File.expand_path path
-      check_file_existence! full_path
-
+      return unless File.exist? full_path
       new JSON.parse(File.read(full_path), symbolize_names: true)
     end
 
     def self.destroy!(path)
       full_path = File.expand_path path
-      check_file_existence! full_path
-      File.delete full_path
+      File.delete full_path if File.exist? full_path
     end
-
-    def self.check_file_existence!(path)
-      raise FileNotFound, 'Log does not exist' unless File.exist? path
-    end
-
-    class FileNotFound < StandardError; end
   end
 end

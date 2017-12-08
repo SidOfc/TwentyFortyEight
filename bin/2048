@@ -4,5 +4,7 @@ require_relative '../lib/TwentyFortyEight'
 options = TwentyFortyEight::Cli.parse!
 
 TwentyFortyEight.send options.mode, options do
-  down || left || right || up
+  sequence(:left, :down) || sequence(:down, :left) ||
+    sequence(:right, :down) || sequence(:right, :left) ||
+    down || left || right || up
 end

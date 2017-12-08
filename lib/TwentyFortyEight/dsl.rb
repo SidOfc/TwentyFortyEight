@@ -52,6 +52,10 @@ module TwentyFortyEight
       game.quit! && :quit
     end
 
+    def game
+      @game
+    end
+
     def method_missing(sym, *args, &block)
       return info sym     if info? sym
       return sym          if game.dup.action(sym, insert: false).changed?

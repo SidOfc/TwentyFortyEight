@@ -1,7 +1,9 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path('../lib', __dir__)
+
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'TwentyFortyEight/version'
+require_relative 'lib/TwentyFortyEight/version'
 
 Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.1'
@@ -23,11 +25,11 @@ Gem::Specification.new do |spec|
   spec.executables   = ['2048']
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.14'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'bundler', '~> 2.1.4'
   spec.add_development_dependency 'coveralls'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'rake',    '~> 13'
+  spec.add_development_dependency 'rspec',   '~> 3.0'
 
   spec.add_runtime_dependency 'curses'
   spec.add_runtime_dependency 'json'
